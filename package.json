@@ -1,0 +1,23 @@
+{
+  "name": "projectname",
+  "version": "0.0.1",
+  "amd": {},
+  "engine": "node ~0.10.13",
+  "volo": {
+    "baseUrl": "www/js/lib",
+    "dependencies": {
+      "require": "github:jrburke/requirejs/2.1.8",
+      "domReady": "github:requirejs/domReady/2.0.1"
+    },
+    "testUrl": "test/lib",
+    "testDependencies": {
+      "jasmine": "github:pivotal/jasmine/v1.3.1"
+    }
+  },
+  "devDependencies": {
+    "jshint": "~2.1.4",
+    "requirejs": "~2.1.8",
+    "volo-ghdeploy": "0.0.6",
+    "volo-appcache": "0.0.2"
+  }
+}

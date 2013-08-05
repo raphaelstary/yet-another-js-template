@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jasmine Spec Runner</title>
+
+    <link rel="stylesheet" type="text/css" href="lib/jasmine-1.3.1/jasmine.css">
+    <script type="text/javascript" src="lib/jasmine-1.3.1/jasmine.js"></script>
+    <script type="text/javascript" src="lib/jasmine-1.3.1/jasmine-html.js"></script>
+
+    <script src="../www/js/lib/require.js"></script>
+
+    <script type="text/javascript">
+        require.config({
+            baseUrl: '../www/js',
+            paths: {
+                "spec": "../../test/spec"
+            }
+        });
+
+        var jasmineEnv = jasmine.getEnv();
+        jasmineEnv.updateInterval = 1000;
+        var htmlReporter = new jasmine.HtmlReporter();
+        jasmineEnv.addReporter(htmlReporter);
+        jasmineEnv.specFilter = function (spec) {
+            return htmlReporter.specFilter(spec);
+        };
+
+        require(['lib/domReady',
+            'spec/TestSpec'
+        ], function () {
+            jasmineEnv.execute();
+        });
+    </script>
+
+</head>
+
+<body>
+</body>
+</html>
