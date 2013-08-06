@@ -8,31 +8,24 @@
     <script type="text/javascript" src="lib/jasmine-1.3.1/jasmine-html.js"></script>
 
     <script src="../www/js/lib/require.js"></script>
+</head>
 
-    <script type="text/javascript">
-        require.config({
-            baseUrl: '../www/js',
-            paths: {
-                "spec": "../../test/spec"
-            }
-        });
+<script>
+    require(['requireTestConfig'], function () {
+        require(['lib/domReady', 'allSpecs'], function () {
 
-        var jasmineEnv = jasmine.getEnv();
-        jasmineEnv.updateInterval = 1000;
-        var htmlReporter = new jasmine.HtmlReporter();
-        jasmineEnv.addReporter(htmlReporter);
-        jasmineEnv.specFilter = function (spec) {
-            return htmlReporter.specFilter(spec);
-        };
+            var jasmineEnv = jasmine.getEnv();
+            jasmineEnv.updateInterval = 1000;
+            var htmlReporter = new jasmine.HtmlReporter();
+            jasmineEnv.addReporter(htmlReporter);
+            jasmineEnv.specFilter = function (spec) {
+                return htmlReporter.specFilter(spec);
+            };
 
-        require(['lib/domReady',
-            'spec/TestSpec'
-        ], function () {
             jasmineEnv.execute();
         });
-    </script>
-
-</head>
+    });
+</script>
 
 <body>
 </body>
