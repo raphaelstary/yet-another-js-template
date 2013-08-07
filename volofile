@@ -1,15 +1,86 @@
 /*jslint node: true */
 'use strict';
 
+var WWW_BUILT = 'www-built';
+var WWW_GHDEPLOY = 'www-ghdeploy';
+
 module.exports = {
+    clean: {
+        summary: 'removes built directory',
+
+        run: 'v.rm ' + WWW_BUILT
+    },
+
     test: {
-    
+        summary: 'executes all unit tests aka jasmin spec files',
+
         run: function (d, v, namedArgs) {
             d.resolve(
                v.withDir('test', function () {
                   return v.exec('node consoleRunner.js');
                })
             );
+        }
+    },
+
+    lint: {
+        summary: 'runs jshint on a.js',
+        run: 'n.jshint www/js/main.js'
+    },
+
+    ghdeploy: require('volo-ghdeploy')(WWW_BUILT, WWW_GHDEPLOY),
+
+    appcache: require('volo-appcache')({
+        depends: ['build'],
+        dir: WWW_BUILT
+    }),
+
+    serve: {
+        summary: 'start a local web server for testing',
+
+        run: function (d, v, namedArgs, alternatePath) {
+            var PORT = 8080;
+            var PATH = alternatePath || 'www';
+
+            var staticHttp = require('node-static');
+            var fileServer = new(staticHttp.Server)(PATH);
+            var simpleUserHash = 0;
+
+            var app = require('http').createServer(function (request, response) {
+                request.addListener('end', function () {
+                    fileServer.serve(request, response);
+                }).resume();
+            });
+
+            app.listen(PORT);
+            console.log("starting web server, serving folder '" + PATH + "' at http://localhost:" + PORT);
+        }
+    },
+
+    build: {
+        summary: 'build the stuff, means uglify and concatenate files',
+
+        flags: {
+            //Does not print the build output.
+            'q': 'quiet'
+        },
+
+        depends: ['test', 'clean'],
+
+        run: function (d, v, namedArgs) {
+
+            d.resolve(v.spawn('node',
+                [
+                    'node_modules/.bin/r.js',
+                    '-o',
+                    'appDir=www',
+                    'baseUrl=js',
+                    'name=main',
+                    'dir=' + WWW_BUILT
+                ], {
+                    useConsole: !namedArgs.quiet
+                }
+            ));
         }
     }
 };
