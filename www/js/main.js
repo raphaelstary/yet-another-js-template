@@ -1,3 +1,3 @@
-require(['Test', 'lib/domReady'], function () {
-
+require(['Test', 'lib/domReady'], function (Test) {
+    alert(Test.ONE);
 });

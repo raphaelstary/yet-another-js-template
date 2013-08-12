@@ -69,18 +69,33 @@ module.exports = {
 
         run: function (d, v, namedArgs) {
 
+            v.copyDir('www', WWW_BUILT);
+            v.rm(WWW_BUILT + '/js');
+
             d.resolve(v.spawn('node',
                 [
                     'node_modules/.bin/r.js',
                     '-o',
-                    'appDir=www',
-                    'baseUrl=js',
-                    'name=main',
-                    'dir=' + WWW_BUILT
+                    'baseUrl=www/js',
+                    'name=../../node_modules/almond/almond',
+                    'include=main',
+                    'wrap=true',
+                    'out=' + WWW_BUILT + '/js/app.js'
                 ], {
                     useConsole: !namedArgs.quiet
                 }
             ));
+
+            var indexName = WWW_BUILT + '/index.html',
+                contents = v.read(indexName),
+                scriptRegExp = /(<script[^>]+data-main="[^"]+"[^>]+)(src="[^"]+")([^>]*>\s*<\/script>)/;
+
+            contents = contents.replace(scriptRegExp,
+                function (match, pre, script, post) {
+                    return '<script src="js/app.js"' + post;
+                }
+            );
+            v.write(indexName, contents);
         }
     }
 };
